@@ -71,4 +71,4 @@ def reenact():
     return Response(file_data, 206, mimetype='video/mp4', content_type='video/mp4', direct_passthrough=True)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=False, host='0.0.0.0')

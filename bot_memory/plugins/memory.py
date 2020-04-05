@@ -44,6 +44,7 @@ async def _(msg, ctx):
 
 @plugin.on_attachments(["image"])
 async def apply_reenacment(message, ctx):
+    await ctx.reply("Принял в обработку, скоро отвечу!")
     original_filename = f"originals/{message.attachments[0].file_name}.jpg"
     if isinstance(ctx.backend, Telegram):
         file_id = message.attachments[0].id
