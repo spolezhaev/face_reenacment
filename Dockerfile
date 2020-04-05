@@ -12,8 +12,12 @@ RUN pip install dlib
 
 RUN apt-get install ffmpeg -y
 
+ENV FLASK_APP=main.py FLASK_DEBUG=0 FLASK_ENV=production
+
+RUN conda install flask --yes
+
 COPY . /app
 
-ENTRYPOINT [ "python" ]
+ENTRYPOINT [ "flask" ]
 
-CMD [ "server.py" ]
+CMD [ "run", "--with_threads" ]
