@@ -10,7 +10,12 @@ from kutana.backends.telegram import Telegram
 #from kutana.manager.vk.environment import VKEnvironment
 #from kutana.plugin import Message, Attachment
 
+
+db = {}
+
 plugin = Plugin(name="Memory")
+
+
 
 
 @plugin.on_start()
@@ -21,6 +26,21 @@ async def initiation(kutana):
 async def send_instruction_info(ctx):
     await ctx.reply("Отправьте фотографию Вашего Героя!")
 
+@plugin.on_any_message(user_state="")
+async def lol(msg, ctx):
+    await send_instruction_info(ctx)
+
+@plugin.on_any_message(user_state="photo:number")
+async def _(msg, ctx):
+    if not msg.text.isdigit() or int(msg.text) > int(db[msg.sender_id][0]) :
+        await ctx.reply("Пожалуйста выберите своего героя")
+        return
+    r = requests.post('http://localhost:5000/reenact', data={"face_num": msg.text}, files={'image': open(db[msg.sender_id][1], "rb")})
+
+    output_video = Attachment.new(r.content, type="video" if isinstance(ctx.backend, Telegram) else "doc",
+                                  file_name="output.mp4")
+    await ctx.reply("Ваш результат", attachments=output_video)
+    await ctx.set_state(user_state="")
 
 @plugin.on_attachments(["image"])
 async def apply_reenacment(message, ctx):
@@ -34,10 +54,15 @@ async def apply_reenacment(message, ctx):
         image_link = next(filter(lambda x: x['type'] == 'y', message.attachments[0].raw["sizes"]))['url']
         _ = urllib.request.urlretrieve(url=image_link, filename=original_filename)
     r = requests.post('http://localhost:5000/reenact', files={'image': open(original_filename, "rb")})
-    #with open('plugins/output.gif', 'rb') as f:
-    output_video = Attachment.new(r.content, type="video" if isinstance(ctx.backend, Telegram) else "doc", file_name="output.mp4")
-    await ctx.reply("Ваш результат", attachments=output_video)
-    # folder_name = str(uuid.uuid4())
+    if r.status_code == 300:
+        await ctx.reply("Выберите вашего Героя", attachments=Attachment.new(r.content))
+        await ctx.set_state(user_state="photo:number")
+        db[message.sender_id] = (r.headers['faces_num'], original_filename)
+    else:
+        #with open('plugins/output.gif', 'rb') as f:
+        output_video = Attachment.new(r.content, type="video" if isinstance(ctx.backend, Telegram) else "doc", file_name="output.mp4")
+        await ctx.reply("Ваш результат", attachments=output_video)
+        # folder_name = str(uuid.uuid4())
     # filepath = Path("tmp") / folder_name
     # filepath.mkdir(exist_ok=True, parents=True)
     # original_filename = filepath / "original.ogg"

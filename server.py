@@ -54,7 +54,9 @@ def reenact():
         return "There is no faces on image", 400
 
     if faces_num > 1 and 'face_num' not in request.form.keys():
-        return send_file(highlight_faces(img), as_attachment=True), 300
+        response = make_response(send_file(highlight_faces(img), as_attachment=True))
+        response.headers['faces_num'] = faces_num
+        return response, 300
 
     face_idx = int(request.form["face_num"]) - 1 if 'face_num' in request.form.keys() else 0
 
