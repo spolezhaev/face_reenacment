@@ -56,7 +56,7 @@ def reenact():
     if faces_num > 1 and 'face_num' not in request.form.keys():
         return send_file(highlight_faces(img), as_attachment=True), 300
 
-    face_idx = int(request.form["face_num"]) if 'face_num' in request.form.keys() else 0
+    face_idx = int(request.form["face_num"]) - 1 if 'face_num' in request.form.keys() else 0
 
     if face_idx >= faces_num:
         return "There is no such face on image", 404
