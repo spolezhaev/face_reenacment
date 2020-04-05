@@ -1,0 +1,14 @@
+version: "2"
+services:
+  bot:
+    image: hello-world
+    networks: 
+      - backend
+  animate:
+    image: hello-world
+    networks: 
+      - backend
+
+networks:
+  backend:
+    driver: "bridge"
