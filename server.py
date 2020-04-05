@@ -23,7 +23,7 @@ from demo import load_checkpoints
 generator, kp_detector = load_checkpoints(config_path='config/vox-256.yaml',
                             checkpoint_path='chkpts/vox-cpk.pth.tar')
 
-driving_video = imageio.mimread('videos/06.mp4', memtest=float('inf'))
+driving_video = imageio.mimread('videos/11.mp4', memtest=float('inf'))
 driving_video = [resize(frame, (256, 256))[..., :3] for frame in driving_video]
 
 def process_request(image):
