@@ -55,7 +55,6 @@ def reenact():
 
     if faces_num > 1 and 'face_num' not in request.form.keys():
         return send_file(highlight_faces(img), as_attachment=True), 300
-        #return Response(codecs.open(highlight_faces(img), 300, mimetype="image/jpg", content_type="image/jpg", direct_passthrough=True)
 
     face_idx = int(request.form["face_num"]) if 'face_num' in request.form.keys() else 0
 
@@ -68,10 +67,6 @@ def reenact():
     file_data = codecs.open(filename, 'rb').read()
 
     return Response(file_data, 206, mimetype='video/mp4', content_type='video/mp4', direct_passthrough=True)
-    # response = make_response()
-    # #response.headers['my-custom-header'] = 'my-custom-status-0'
-    # response.data = file_data
-    # return response
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
