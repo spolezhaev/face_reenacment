@@ -53,6 +53,11 @@ async def apply_reenacment(message, ctx):
     else:
         image_link = next(filter(lambda x: x['type'] == 'y', message.attachments[0].raw["sizes"]))['url']
         _ = urllib.request.urlretrieve(url=image_link, filename=original_filename)
+
+    r = requests.post('https://deoldify-044f6348.localhost.run/deoldify', files={'image': open(original_filename, "rb")})
+    with open(original_filename, "wb") as f:
+        f.write(r.content)
+    await ctx.reply("Обработанный снимок", attachments=Attachment.new(r.content))
     r = requests.post('http://localhost:5000/reenact', files={'image': open(original_filename, "rb")})
     if r.status_code == 300:
         await ctx.reply("Выберите вашего Героя", attachments=Attachment.new(r.content))

@@ -12,7 +12,7 @@ RUN pip install dlib
 
 RUN apt-get install ffmpeg -y
 
-ENV FLASK_APP=main.py FLASK_DEBUG=0 FLASK_ENV=production
+ENV FLASK_APP=server.py FLASK_DEBUG=0 FLASK_ENV=production
 
 RUN conda install flask --yes
 
