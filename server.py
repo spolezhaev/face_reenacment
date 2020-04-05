@@ -6,12 +6,12 @@ from skimage.transform import resize
 import warnings
 from demo import make_animation
 from skimage import img_as_ubyte
-from flask import Flask, jsonify, make_response
+from flask import Flask, jsonify, make_response, send_file
 from flask import request, Response
 import cv2
 import uuid
 import codecs
-from crop_faces import crop_faces
+from crop_faces import crop_faces, highlight_faces
 import subprocess
 
 app = Flask(__name__)
@@ -54,7 +54,8 @@ def reenact():
         return "There is no faces on image", 400
 
     if faces_num > 1 and 'face_num' not in request.form.keys():
-        return "Choose face", 300
+        return send_file(highlight_faces(img), as_attachment=True), 300
+        #return Response(codecs.open(highlight_faces(img), 300, mimetype="image/jpg", content_type="image/jpg", direct_passthrough=True)
 
     face_idx = int(request.form["face_num"]) if 'face_num' in request.form.keys() else 0
 

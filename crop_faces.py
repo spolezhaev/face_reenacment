@@ -176,5 +176,16 @@ def crop_faces(img):
         cv2.imwrite(f"images/{folder_name}/face_{num}.jpg", bgr_to_rbg(image))
     return len(faces), folder_name
 
+def highlight_faces(img):
+    detector = dlib.get_frontal_face_detector()
+    faces = detector(img, 1)
+    filename = f"images/{uuid.uuid1()}.jpg"
+    for num, face in enumerate(faces):
+        cv2.rectangle(img, (face.left(), face.top()), (face.right(), face.bottom()), (255,0,0), 2)
+
+        cv2.putText(img, str(num + 1), (face.left() + (face.right() - face.left())// 3, face.bottom() + (face.top() - face.bottom()) // 3), color=(255,0,0), fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=2, thickness=3)
+
+    cv2.imwrite(filename, bgr_to_rbg(img))
+    return filename
 if __name__ == "__main__":
-    crop_faces(cv2.imread("to_crop/unnamed.png"))
+    highlight_faces(cv2.imread("test.jpg"))
